@@ -1,0 +1,171 @@
+/* You can add global styles to this file, and also import other style files */
+/**======================================================================
+=========================================================================
+Template Name: berry - Most Complete Angular Admin Template
+Author: CodedThemes
+Support: https://codedthemes.support-hub.io/
+File: style.css
+=========================================================================
+=================================================================================== */
+
+// main framework
+@import 'node_modules/bootstrap/scss/functions';
+@import 'node_modules/bootstrap/scss/variables';
+@import 'node_modules/bootstrap/scss/variables-dark';
+
+@import 'scss/settings/color-variables';
+@import 'scss/settings/theme-variables';
+@import 'scss/settings/bootstrap-variables.scss';
+
+@import 'scss/bootstrap/bootstrap.scss';
+
+@import 'node_modules/bootstrap/scss/utilities';
+@import 'node_modules/bootstrap/scss/utilities/api';
+
+@import 'scss/themes/generic.scss';
+@import 'scss/themes/general.scss';
+
+// Layouts
+@import 'scss/themes/layouts/layouts';
+
+// Components
+@import 'scss/themes/components/components';
+
+// pages
+@import 'scss/themes/pages/page.scss';
+
+@import 'scss/themes/customizer';
+@import 'scss/style-preset.scss';
+
+// fonts
+@import url('scss/fonts/berry/berry-icons.css'); /** custom font icons - berry **/
+@import 'scss/fonts/tabler-icons.min.css';
+@import 'scss/fonts/phosphor/duotone/style.css';
+
+// quill-editor
+@import "~quill/dist/quill.core.css";
+@import "~quill/dist/quill.bubble.css";
+@import "~quill/dist/quill.snow.css";
+
+
+body::-webkit-scrollbar {
+    width: 0px; 
+    height: 0px; 
+}
+
+.scrollbar-none {
+    overflow: auto;
+    scrollbar-width: none;
+}
+
+.scrollbar {
+    // scrollbar-width: thin;
+    // scrollbar-color: #dee2e6 #f8f9fa;
+    will-change: transform;
+
+    /* For Chrome/Safari/Edge */
+    &::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+    }
+
+    // &::-webkit-scrollbar-track {
+    //     background: #f8f9fa;
+    // }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #d0d0d0;
+        border-radius: 4px;
+    }
+}
+
+.modal.fade .modal-dialog {
+  transform: scale(0.9);
+  // transform: translateY(30px);
+  opacity: 0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.modal.fade.show .modal-dialog {
+  // transform: translateY(0);
+  transform: scale(1);
+  opacity: 1;
+}
+
+.modal-content {
+    background-color: white;
+}
+
+
+//ng-select
+@media screen and (min-width: 768px) {
+  .ng-select .ng-select-container {
+    // width: 120% !important;
+  }
+  .ng-select.popup .ng-select-container {
+    width: 100% !important;
+  }
+
+  .ng-select.fix-width {
+    .ng-dropdown-panel {
+      width: 125% !important;
+    }
+  }
+
+}
+
+.ng-select .ng-clear-wrapper {
+  display: none;
+}
+
+.ng-dropdown-panel {
+  z-index: 1000 !important;
+  .scroll-host {
+    left: -12px;
+    background: #fff;
+    top: 7px;
+    border-radius: 5px;
+    border: 1px solid lightgray;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+  }
+
+  .ng-dropdown-panel-items .ng-option {
+    padding: 6px;
+    border-bottom: 1px solid lightgray;
+  
+    &:hover {
+      background-color: var(--body-background-color);
+    }
+  
+    span {
+      padding: 2px 6px;
+    }
+  }
+}
+
+.ng-select.top .ng-dropdown-panel {
+  .scroll-host {
+    width: 100%;
+    position: absolute !important;
+    transform: translate3d(0px, 0px, 0px) !important;
+    inset: auto auto 30px -12px !important;
+    box-shadow: none !important;
+  }
+}
+
+.ng-select-disabled {
+  background-color: #e9ecef;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.toast-container {
+    --bs-toast-zindex: 1090;
+    position: fixed;
+    z-index: var(--bs-toast-zindex);
+    width: max-content;
+    max-width: 100%;
+    pointer-events: none;
+}

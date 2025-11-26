@@ -1,0 +1,29 @@
+@if (item?.allowView) {
+<li [ngClass]="item.classes!" [routerLinkActive]="['active']">
+  @if (item.url && !item.external) {
+  <a class="nav-link" [target]="item.target ? '_blank' : '_self'" [routerLink]="[item.url]"
+    (click)="closeOtherMenu($event)">
+    @if (item.icon) {
+    <span class="coded-micon"><i [ngClass]="item.icon"></i></span>
+    }
+    @if (item.icon) {
+    <span class="coded-mtext">{{ item.title }}</span>
+    } @else {
+    {{ item.title }}
+    }
+  </a>
+  }
+  @if (item.url && item.external) {
+  <a [target]="item.target ? '_blank' : '_self'" [href]="item.url">
+    @if (item.icon) {
+    <span class="coded-micon"><i [ngClass]="item.icon"></i></span>
+    }
+    @if (item.icon) {
+    <span class="coded-mtext">{{ item.title }}</span>
+    } @else {
+    {{ item.title }}
+    }
+  </a>
+  }
+</li>
+}

@@ -1,0 +1,72 @@
+<div class="row">
+    <div class="col-sm-12">
+        <app-card cardTitle="" modalId="addEmailTemplate" (callbackFun)="editModalOpen('')">
+            <app-table [columns]="columns" [rows]="list" [actions]="actions" [totalItems]="list?.length"
+                (edit)="editModalOpen($event)" (delete)="deleteCategory($event)"
+                (updatePagination)="updatePagination($event)" />
+        </app-card>
+    </div>
+</div>
+
+<!--Add category model-->
+<div class="modal fade" id="addEmailTemplate" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{!editingCategory? 'Create': 'Edit'}} Mail</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body scrollbar" style="max-height: 70vh; overflow-y: auto; overflow-x: hidden;">
+
+                <form [formGroup]="categoryForm">
+                            <div class="row mb-3">
+                                <div class="col-lg-6 col-sm-12 mb-3 mb-lg-0">
+                                    <label class="form-label">Title<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" formControlName="title"
+                                        placeholder="Enter Name" required />
+                                </div>
+
+                                <div class="col-lg-6 col-sm-12">
+                                    <label class="form-label">Subject<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" formControlName="subject"
+                                        placeholder="Enter Subject" required />
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-lg-6 col-sm-12 mb-3 mb-lg-0">
+                                    <label class="form-label">Group<span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" formControlName="grp"
+                                        placeholder="Enter Group Name" required />
+                                </div>
+
+                                <div class="col-lg-6 col-sm-12">
+                                    <label class="form-label">Status<span class="text-danger">*</span></label>
+                                    <ng-select class="form-select" [items]="['Active', 'Inactive']"
+                                        formControlName="status" [searchable]="false" [virtualScroll]="true"
+                                        [bufferAmount]="50"
+                                        [placeholder]="categoryForm.get('status').value ? '' : 'Select Status'"
+                                        [clearable]="true">
+                                    </ng-select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Content</label>
+                                <quill-editor #editor
+                                    formControlName="content" [styles]="{height: '250px'}" appValidateForm
+                                    placeholder="Add Content..."></quill-editor>
+                            </div>
+
+                        </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary"
+                    [disabled]="categoryForm.invalid || commonService.viewPage('Masters', 'Category')?.allowEdit != true"
+                    [attr.data-bs-dismiss]="categoryForm.valid ? 'modal': ''"
+                    (click)="editingCategory ? onSubmit('update') : onSubmit('create')">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>

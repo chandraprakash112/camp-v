@@ -1,0 +1,121 @@
+<div class="row">
+    <div class="col-sm-12">
+        <app-card cardTitle="" modalId="addEmailTemplate" (callbackFun)="editModalOpen('')">
+            <app-table [columns]="tableColumns" [rows]="organisationList" [totalItems]="organisationList?.length"
+                [actions]="actions" (edit)="editModalOpen($event)" (delete)="onDeleteOrganisation($event)"
+                (updatePagination)="updatePagination($event)" />
+        </app-card>
+    </div>
+</div>
+
+<div class="modal fade" id="addEmailTemplate" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>{{editingOrg ? 'Edit' : 'Create'}} Organization</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="orgForm" class="row g-2">
+                    <div class="col-12 col-md-6">
+                        <label for="orgName" class="col-form-label">Organisation Name<span
+                                class="text-danger">*</span></label>
+                        <div>
+                            <input name="orgName" type="text" class="form-control" id="orgName" formControlName="title"
+                                placeholder="Enter Organisation Name">
+                            <div class="invalid-feedback">Enter Organisation Name</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label for="orgName" class="col-form-label">Email<span class="text-danger">*</span></label>
+                        <div>
+                            <input name="orgName" type="email" class="form-control" id="email" formControlName="email"
+                                placeholder="Enter Email">
+                            <div class="invalid-feedback">Enter Email</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label for="unit" class="col-form-label">Phone no.</label>
+                        <div>
+                            <input name="unit" type="text" class="form-control" id="mobile_number"
+                                formControlName="phone" placeholder="Enter Phone no." [maxLength]="10" />
+                            <div class="invalid-feedback">Enter Phone no.</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label for="businessUnit" class="col-form-label">Type of Organisation</label>
+                        <div>
+                            <ng-select class="form-select" [items]="organisationTypes" formControlName="type_of_org"
+                                [placeholder]="orgForm.value?.type_of_org ? '' : 'Select Type of Organisation'"
+                                [searchable]="true" [virtualScroll]="true" [bufferAmount]="50"
+                                [clearable]="true"></ng-select>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label for="businessUnit" class="col-form-label">Status</label>
+                        <div>
+                            <ng-select class="form-select" [items]="['Active','Inactive']" formControlName="status"
+                                [placeholder]="orgForm.value?.status ? '' : 'Select Status'" [searchable]="true"
+                                [virtualScroll]="true" [bufferAmount]="50" [clearable]="true"></ng-select>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label for="country" class="col-form-label">Country</label>
+                        <div>
+                            <ng-select class="form-select" [items]="countries" formControlName="country"
+                                [placeholder]="orgForm.value?.country ? '' : 'Select Country'"
+                                [searchable]="true" [virtualScroll]="true"
+                                [bufferAmount]="50" [clearable]="true"></ng-select>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label for="state" class="col-form-label">State</label>
+                        <div>
+                            <ng-select class="form-select" [items]="states" formControlName="state"
+                                [placeholder]="orgForm.value?.state ? '' : 'Select State'"
+                                [searchable]="true" [virtualScroll]="true" [bufferAmount]="50"
+                                [clearable]="true"></ng-select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label for="city" class="col-form-label">City</label>
+                        <div>
+                            <ng-select class="form-select top" [items]="cities" formControlName="city"
+                                [placeholder]="orgForm.value?.city ? '' : 'Select City'" [searchable]="true"
+                                [virtualScroll]="true" [bufferAmount]="50" [clearable]="true"></ng-select>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label for="address" class="col-form-label">Address</label>
+                        <div>
+                            <input name="address" type="text" class="form-control" id="address"
+                                formControlName="address" placeholder="Enter Address">
+                            <div class="invalid-feedback">Enter Address</div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label for="anotherAddress" class="col-form-label">Another Address</label>
+                        <div>
+                            <input name="anotherAddress" type="text" class="form-control" id="anotherAddress"
+                                formControlName="another_address" placeholder="Enter Another Address">
+                            <div class="invalid-feedback">Enter Another Address</div>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" [disabled]="orgForm.invalid"
+                    [attr.data-bs-dismiss]="orgForm.valid ? 'modal': ''"
+                    (click)="editingOrg? onSubmit('update'): onSubmit('create')">Save</button>
+            </div>
+        </div>
+    </div>
+</div>

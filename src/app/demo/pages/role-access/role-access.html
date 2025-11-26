@@ -1,0 +1,48 @@
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive scrollbar">
+                    <table class="table accordion datatable" id="accordionTable">
+                        <thead class="small">
+                            <tr>
+                                <th scope="col" class="table-header-bg position-sticky top-0 start-0 bg-white text-start">Role Name</th>
+                                <th *ngFor="let module of moduleList" class="text-primary table-header-bg">
+                                    {{module.title}}</th>
+                            </tr>
+                            <tr>
+                                <th scope="col" class="position-sticky top-0 start-0 bg-white text-start"></th>
+                                <th *ngFor="let module of moduleList" class="text-muted"><span class="me-1">View</span>
+                                    / <span>Edit</span></th>
+                            </tr>
+                        </thead>
+                        <tbody style="background-color: white;">
+                            <tr *ngFor="let role of roleList; let i = index;">
+                                <th class="position-sticky top-0 start-0 bg-white text-start">{{ role?.title }}</th>
+                                <td *ngFor="let module of role.modules; let j = index; trackBy: trackByModule">
+                                    <!-- <ng-container *ngIf="getPermission(role, module?.role_access) as page"> -->
+                                    <i class="cursor-pointer bi mx-2" [ngClass]="[
+                                  module.status == 'Yes' ? 'bi-check-circle text-success' : 'bi-x-circle text-danger',
+                                  isAccessChanged(role?.id, module?.id) ? 'text-primary fw-bold' : ''
+                               ]" title="View Access"
+                                        (click)="onChangeRoleAccess({id: role?.id,page_id: module?.id, status: module.status,title: module?.title}, i,j)">
+                                        <!-- (click)="changeAccess('view', module, role?.id, module?.id)"> -->
+                                    </i>
+                                    <!-- <i class="cursor-pointer bi mx-2"
+                               [ngClass]="[
+                                  page.allowEdit ? 'bi-check-circle text-success' : 'bi-x-circle text-danger',
+                                  isAccessChanged(role?.id, module?.id) ? 'text-primary fw-bold' : ''
+                               ]"
+                               title="Edit Access"
+                               (click)="changeAccess('edit', page, role?.id, module?.id)">
+                            </i> -->
+                                    <!-- </ng-container> -->
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

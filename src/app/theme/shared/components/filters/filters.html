@@ -1,0 +1,327 @@
+<button *ngIf="filterType == 'popup' || isMobileView" type="button" class="form-control"
+  [ngClass]="filterType == 'popup' ? 'ps-0 pt-0 border-0' : 'my-1'" style="width: max-content;"
+  [ngStyle]="filterType == 'popup' ? { background: 'none'} : {}" data-bs-toggle="dropdown" (click)="fetchFilters()"
+  data-bs-auto-close="false" #filterBtn>
+  <!-- <i class="bi bi-funnel-fill"></i> -->
+  <img *ngIf="filterType == 'popup'" src="assets/images/Filter_icon.svg" width="75%" height="75%">
+  <i *ngIf="filterType !== 'popup'" class="bi bi-sliders"></i>
+</button>
+<div
+  [ngClass]="filterType == 'popup' || isMobileView ? 'dropdown-menu dropdown-menu-end dropdown-menu-arrow px-3' : 'filter-tabs my-3 d-flex justify-content-between align-items-center'"
+  [class.mobile-view-filter]="isMobileView">
+  <div class="d-flex justify-content-between align-items-center pb-2" *ngIf="isMobileView || filterType == 'popup'">
+    <label class="mx-2 d-flex align-items-center">Filter By: <i *ngIf="module != 'admin-dashboard'"
+        class="bi bi-arrow-clockwise cursor-pointer h6 m-0 fw-bold text-primary ms-1" title="Reset Filter"
+        (click)="resetFilters()"></i> </label> <i class="bi bi-x cursor-pointer" (click)="closeDropdown()"></i>
+  </div>
+  <ul class="nav nav-tabs" [class.flex-column]="filterType == 'popup' || isMobileView"
+    [id]="filterType == 'chartTabs' ? 'chart-tabs' : 'tabs'" style="scroll-behavior: smooth;">
+    <div class="d-flex justify-content-between align-items-center"
+      *ngIf="filterType == 'tabs' && !isMobileView || filterType == 'chartTabs' && !isMobileView && module !== 'sla-reports'">
+      <label class="mx-2 d-flex align-items-center">Filter By: <i *ngIf="module != 'admin-dashboard'"
+          class="bi bi-arrow-clockwise cursor-pointer h6 m-0 fw-bold text-primary ms-1" title="Reset Filter"
+          (click)="resetFilters()"></i> </label>
+    </div>
+    <!-- <ng-container *ngIf="isFieldVisible('duration')">
+      <li class="cursor-pointer py-2 mx-1" *ngIf="durationOptions.length > 5 && !isMobileView">
+        <button type="button" class="form-control form-select" data-bs-toggle="dropdown">
+          Select Duration
+        </button>
+        <div class='dropdown-menu dropdown-menu-end dropdown-menu-arrow px-3'>
+      <li class="cursor-pointer py-2 mx-1" *ngFor="let duration of durationOptions"
+        (click)="applyDurationFilter(duration)" (click)="selectedFilter = duration"
+        [ngClass]="{'active': selectedFilter === duration}">
+        <div class="filter-item form-control px-3">{{ duration }}</div>
+      </li>
+      </div>
+      </li>
+      <ng-container *ngIf="durationOptions.length <= 5 || isMobileView">
+        <li class="cursor-pointer py-2 mx-1" *ngFor="let duration of durationOptions"
+          (click)="duration == 'Custom Date' ? '' : applyDurationFilter(duration)"
+          [ngClass]="{'active': selectedFilter === duration && duration != 'Custom Date'}">
+          <div class="filter-item form-control px-3" *ngIf="duration != 'Custom Date'">{{ duration }}</div>
+          <div *ngIf="duration == 'Custom Date'">
+            <button type="button" class="form-control"
+              [ngClass]="{'border border-primary': selectedFilter === 'Custom Date'}" data-bs-toggle="dropdown">
+              Custom Range <i class="bi bi-calendar3 mx-1"></i>
+            </button>
+            <div [ngClass]="!isMobileView && filterType == 'chartTabs' ? 'dropdown-menu dropdown-menu-arrow px-3' : ''"
+              style="z-index: 1200;">
+              <div class="d-flex flex-gap-5">
+                <div>
+                  <label class="form-label">From</label>
+                  <input type="date" class="form-control" name="fromDate" [(ngModel)]="filterOptions.fromDate"
+                    min="1970-01-01" [max]="currentDate" (change)="checkValidDate()" />
+                </div>
+                <div [ngClass]="filterOptions.fromDate ? '' : 'pe-none opacity-50'">
+                  <label class="form-label">To</label>
+                  <input type="date" class="form-control" name="toDate" [(ngModel)]="filterOptions.toDate"
+                    [min]="filterOptions.fromDate" [max]="currentDate" (change)="isInvalidToDate = false"
+                    [class.is-invalid]="isInvalidToDate" />
+                </div>
+              </div>
+              <button type="button" class="form-control mt-3 w-auto float-end" [disabled]="!filterOptions?.toDate"
+                (click)="applyDurationFilter(duration)">Apply</button>
+            </div>
+          </div>
+        </li>
+      </ng-container>
+    </ng-container> -->
+    <!-- <ng-container>
+    <li class="cursor-pointer py-2 mx-1" *ngIf="isFieldVisible('filterType')"
+      [ngClass]="{'active': selectedFilter === ''}" (click)="selectedFilter = ''"
+      (click)="filterOptions.filterType = 1;resetFilters()">
+      <div class="filter-item form-control px-3">All</div>
+    </li>
+    <li class="cursor-pointer py-2 mx-1" *ngIf="isFieldVisible('filterType')"
+      [ngClass]="{'active': selectedFilter === 'My Assigned'}" (click)="selectedFilter = 'My Assigned'"
+      (click)="filterOptions.filterType = 2;applyFilters()">
+      <div class="filter-item form-control px-3">My Assigned Tickets</div>
+    </li>
+    <li class="cursor-pointer py-2 mx-1" *ngIf="isFieldVisible('filterType')"
+      [ngClass]="{'active': selectedFilter === 'My Bin'}" (click)="selectedFilter = 'My Bin'"
+      (click)="filterOptions.filterType = 3;applyFilters()">
+      <div class="filter-item form-control px-3">My Bin Tickets</div>
+    </li>
+    <li class="cursor-pointer py-2 mx-1" *ngIf="isFieldVisible('filterType')"
+      [ngClass]="{'active': selectedFilter === 'My Closed'}" (click)="selectedFilter = 'My Closed'"
+      (click)="filterOptions.filterType = 4;applyFilters()">
+      <div class="filter-item form-control px-3">My Closed Tickets</div>
+    </li>
+    <li class="cursor-pointer py-2 mx-1" *ngIf="isFieldVisible('filterType')"
+      [ngClass]="{'active': selectedFilter === 'My Tickets'}" (click)="selectedFilter = 'My Tickets'"
+      (click)="filterOptions.filterType = 6;applyFilters()">
+      <div class="filter-item form-control px-3">My Open Tickets</div>
+    </li>
+  </ng-container>
+  <ng-container>
+    <li class="cursor-pointer py-2 mx-1" *ngIf="isFieldVisible('slaFilter')" [ngClass]="{'active': selectedFilter === ''}"
+      (click)="selectedFilter = ''" (click)="filterOptions.slaFilter = 'ALL';resetFilters()">
+      <div class="filter-item form-control px-3">All</div>
+    </li>
+    <li class="cursor-pointer py-2 mx-1" *ngIf="isFieldVisible('slaFilter')"
+      [ngClass]="{'active': selectedFilter === 'Breached'}" (click)="selectedFilter = 'Breached'"
+      (click)="filterOptions.slaFilter = 'BREACHED';applyFilters()">
+      <div class="filter-item form-control px-3">Breached</div>
+    </li>
+    <li class="cursor-pointer py-2 mx-1" *ngIf="isFieldVisible('slaFilter')"
+      [ngClass]="{'active': selectedFilter === 'Not Breached'}" (click)="selectedFilter = 'Not Breached'"
+      (click)="filterOptions.slaFilter = 'NOT BREACHED';applyFilters()">
+      <div class="filter-item form-control px-3">Not Breached</div>
+    </li>
+  </ng-container> -->
+    <li class="py-2 mx-1" *ngIf="filterApply?.search">
+      <span *ngIf="filterApply?.searchTitle" class="floating-filter-label">{{filterApply?.searchTitle}}</span>
+      <i class="bi bi-search floating-search-label cursor-pointer text-primary" (click)="applyFilters()"></i>
+      <input class="form-control border-0" [(ngModel)]="filterOptions.ticketNo"
+        [placeholder]="filterApply?.searchTitle || 'Search'" (keyup.enter)="applyFilters()" />
+    </li>
+  
+    <!-- <li class="py-2 mx-1" *ngIf="isFieldVisible('businessUnit')">
+    <span *ngIf="filterOptions.businessUnitId" class="floating-filter-label">Department</span>
+    <ng-select class="form-select fix-width" [items]="businessDetails" bindLabel="businessUnitName"
+      bindValue="businessUnitId" [(ngModel)]="filterOptions.businessUnitId" [searchable]="true" [virtualScroll]="true"
+      [bufferAmount]="50" [placeholder]="filterOptions.businessUnitId ? '' : 'Select Department'" [clearable]="true"
+      (change)="filterOptions.binId = '';filterOptions.categoryId = '';applyFilters();fetchBinDetails()"></ng-select>
+  </li>
+  
+  <li class="py-2 mx-1" *ngIf="isFieldVisible('bin')">
+    <span *ngIf="filterOptions.binId" class="floating-filter-label">Bin</span>
+    <ng-select class="form-select fix-width" [items]="bins" bindLabel="value" bindValue="id"
+      [(ngModel)]="filterOptions.binId" [searchable]="true" [virtualScroll]="true" [bufferAmount]="50"
+      [placeholder]="filterOptions.binId ? '' : 'Select Bin'" [clearable]="true" (change)="applyFilters()"></ng-select>
+  </li> -->
+  
+    <!-- <li class="py-2 mx-1" *ngIf="isFieldVisible('bu')">
+    <span *ngIf="filterOptions.buId" class="floating-filter-label">Business Unit</span>
+    <ng-select class="form-select fix-width" [items]="buDetails" bindLabel="buName" bindValue="buId"
+      [(ngModel)]="filterOptions.buId" [searchable]="true" [virtualScroll]="true" [bufferAmount]="50"
+      [placeholder]="filterOptions.buId ? '' : 'Select Business Unit'" [clearable]="true"
+      (click)="buDetails.length == 0 ? fetchBUDetails() : ''" (change)="applyFilters()"></ng-select>
+  </li>
+  
+  <li class="py-2 mx-1" *ngIf="isFieldVisible('category')">
+    <span *ngIf="filterOptions.categoryId" class="floating-filter-label">Category</span>
+    <ng-select class="form-select fix-width" [items]="categories" bindLabel="value" bindValue="id"
+      [(ngModel)]="filterOptions.categoryId" [searchable]="true" [virtualScroll]="true" [bufferAmount]="50"
+      [placeholder]="filterOptions.categoryId ? '' : 'Select Category'" [clearable]="true"
+      (click)="fetchCategoryDetails()"
+      (change)="filterOptions.subCategoryId = ''; applyFilters(); fetchSubCategoryDetails()"></ng-select>
+  </li>
+  
+  <li class="py-2 mx-1" *ngIf="isFieldVisible('subCategory') && filterOptions.categoryId">
+    <span *ngIf="filterOptions.subCategoryId" class="floating-filter-label">Subcategory</span>
+    <ng-select class="form-select fix-width" [items]="subCategories" bindLabel="value" bindValue="id"
+      [(ngModel)]="filterOptions.subCategoryId" [searchable]="true" [virtualScroll]="true" [bufferAmount]="50"
+      [placeholder]="filterOptions.subCategoryId ? '' : 'Select Subcategory'" [clearable]="true"
+      (change)="applyFilters()"></ng-select>
+  </li>
+  
+  <li class="py-2 mx-1" *ngIf="isFieldVisible('multi_subCategory') && filterOptions.categoryId">
+    <span *ngIf="filterOptions.subCategoryId" class="floating-filter-label">Subcategory</span>
+    <ng-select class="form-select fix-width" [multiple]="true" [hideSelected]="true" [items]="subCategories"
+      bindLabel="value" bindValue="id" [(ngModel)]="filterOptions.subCategoryId" [searchable]="true"
+      [virtualScroll]="true" [bufferAmount]="50" [placeholder]="filterOptions.subCategoryId ? '' : 'Select Subcategory'"
+      [clearable]="true" (change)="applyFilters()"></ng-select>
+  </li> -->
+  
+    <!-- <li class="py-2 mx-1" *ngIf="isFieldVisible('orgId') && organizations?.length">
+    <span *ngIf="filterOptions.orgId" class="floating-filter-label">Organization</span>
+    <ng-select class="form-select fix-width" [items]="organizations" bindLabel="value" bindValue="id"
+      [(ngModel)]="filterOptions.orgId" [searchable]="true" [virtualScroll]="true" [bufferAmount]="50"
+      [placeholder]="filterOptions.orgId ? '' : 'Select Organization'" [clearable]="true"
+      (change)="applyFilters()"></ng-select>
+  </li>
+  
+  <li class="py-2 mx-1" *ngIf="isFieldVisible('serviceCategory')">
+    <span *ngIf="filterOptions.categoryId" class="floating-filter-label">Category</span>
+    <select class="form-select" name="categoryId" (change)="applyFilters()" [(ngModel)]="filterOptions.categoryId"
+      (change)="fetchSubCategoryDetails()">
+      <option value="">Select Category</option>
+      <option *ngFor="let category of categoriesService" [value]="category.categoryId">
+        {{ category.categoryName }}
+      </option>
+    </select>
+  </li>
+  
+  <li class="py-2 mx-1" *ngIf="isFieldVisible('serviceSubCategory') && filterOptions.categoryId">
+    <span *ngIf="filterOptions.subCategoryId" class="floating-filter-label">Subcategory</span>
+    <select class="form-select" name="subCategoryId" (change)="applyFilters()" [(ngModel)]="filterOptions.subCategoryId">
+      <option value="">Select SubCategory</option>
+      <option *ngFor="let subCategory of subCategoriesService" [value]="subCategory.subCategoryId">
+        {{ subCategory.subCategoryName }}
+      </option>
+    </select>
+  </li> -->
+  
+    <!-- <li class="py-2 mx-1" *ngIf="isFieldVisible('status')">
+    <span *ngIf="filterOptions.status" class="floating-filter-label">Status</span>
+    <select class="form-select" name="status" (change)="applyFilters()" [(ngModel)]="filterOptions.status">
+      <option value="">Select Status</option>
+      <ng-container *ngFor="let status of statusData">
+        <option *ngIf="status.active" [value]="status.statusId">{{status.statusName}} </option>
+      </ng-container>
+    </select>
+  </li>
+  
+  <li class="py-2 mx-1" *ngIf="isFieldVisible('severityId')">
+    <span *ngIf="filterOptions.severityId" class="floating-filter-label">Severity</span>
+    <select class="form-select" name="severity" (change)="applyFilters()" [(ngModel)]="filterOptions.severityId">
+      <option value="">Select Severity</option>
+      <ng-container *ngFor="let severity of severityData">
+        <option *ngIf="severity.active" [value]="severity.severityId">{{severity.severityName}} </option>
+      </ng-container>
+    </select>
+  </li> -->
+  
+    <!-- <li class="py-2 mx-1" *ngIf="isFieldVisible('ticketCreator')">
+    <span *ngIf="filterOptions.ticketCreator" class="floating-filter-label">Creator</span>
+    <ng-select class="form-select fix-width" [items]="ticketCreators" bindLabel="value" bindValue="id"
+      [(ngModel)]="filterOptions.ticketCreator" [searchable]="true" [virtualScroll]="true" [bufferAmount]="50"
+      [placeholder]="filterOptions.ticketCreator ? '' : 'Select Creator'" [clearable]="true" [searchFn]="customSearch"
+      (click)="fetchCreators()" (change)="applyFilters()">
+      <ng-template ng-option-tmp let-item="item">
+        {{ item.value }} <br />
+        <small class="px-2 text-secondary" [title]="item.value2">{{ item.value1 }}</small>
+      </ng-template>
+    </ng-select>
+  </li>
+  
+  <li class="py-2 mx-1" *ngIf="isFieldVisible('ticketResolver')">
+    <span *ngIf="filterOptions.ticketResolver" class="floating-filter-label">Resolver</span>
+    <ng-select class="form-select fix-width" [items]="ticketResolvers" bindLabel="value" bindValue="id"
+      [(ngModel)]="filterOptions.ticketResolver" [searchable]="true" [virtualScroll]="true" [bufferAmount]="50"
+      [placeholder]="filterOptions.ticketResolver ? '' : 'Select Resolver'" [clearable]="true" [searchFn]="customSearch"
+      (click)="fetchResolvers()" (change)="applyFilters()">
+      <ng-template ng-option-tmp let-item="item">
+        {{ item.value }} <br />
+        <small class="px-2 text-secondary" [title]="item.value2">{{ item.value1 }}</small>
+      </ng-template>
+    </ng-select>
+  </li> -->
+  
+    <!-- <ng-container *ngIf="customFilters.length > 0">
+    <li class="py-2 mx-1" *ngFor="let field of customFilters; let i=index">
+      <span *ngIf="filterOptions.customFieldValue[i]" class="floating-filter-label">{{ field.fieldName }}</span>
+      <ng-select class="form-select fix-width" [items]="field.optionList" [(ngModel)]="filterOptions.customFieldValue[i]"
+        [placeholder]="filterOptions.customFieldValue[i] ? '' : 'Select ' + field.fieldName"
+        (ngModelChange)="filterOptions.customFieldKey[i] = field.fieldName; applyFilters()" [searchable]="true"
+        [virtualScroll]="true" [bufferAmount]="50" [clearable]="true">
+        <ng-template ng-option-tmp let-item="item">
+          <span [title]="item">{{ item }}</span>
+        </ng-template>
+      </ng-select>
+    </li>
+  </ng-container> -->
+  
+    <!-- <li class="py-2 mx-1" *ngIf="isFieldVisible('calenderType')">
+    <span *ngIf="filterOptions.filterType" class="floating-filter-label">Filter Type</span>
+    <select class="form-select" name="status" [(ngModel)]="filterOptions.calenderType">
+      <option value="" disabled>Filter Type</option>
+      <option value="Monthly">Single Month</option>
+      <option value="Month Range">Month Range</option>
+    </select>
+  </li>
+  <li class="py-2 mx-1" *ngIf="isFieldVisible('calenderType') && filterOptions.calenderType == 'Monthly'">
+    <input type="month" class="form-control" name="fromDate" #singleInput [value]="currentDate.slice(0,7)"
+      (change)="applySingleMonthFilter(singleInput.value)" min="1970-01" [max]="currentDate.slice(0,7)" />
+  </li>
+  <li class="py-2 mx-1" *ngIf="isFieldVisible('calenderType') && filterOptions.calenderType == 'Month Range'">
+    <button type="button" class="form-control" data-bs-toggle="dropdown" *ngIf="!isMobileView && filterType == 'tabs'"
+      data-bs-auto-close="outside">
+      Select Range <i class="bi bi-calendar3 mx-1"></i>
+    </button>
+    <div
+      [ngClass]=" !isMobileView && filterType == 'tabs' ? 'dropdown-menu dropdown-menu-end dropdown-menu-arrow px-3' : ''">
+      <div class="d-flex flex-gap-5">
+        <div>
+          <label class="form-label">From</label>
+          <input type="month" class="form-control" name="fromDate" [(ngModel)]="filterOptions.fromDate" min="1970-01"
+            [max]="currentDate.slice(0,7)" (change)="filterOptions.toDate ? applyMonthRangeFilters() : ''" />
+        </div>
+        <div [ngClass]="filterOptions.fromDate ? '' : 'pe-none opacity-50'">
+          <label class="form-label">To</label>
+          <input type="month" class="form-control" name="toDate" [(ngModel)]="filterOptions.toDate"
+            [min]="filterOptions.fromDate" [max]="currentDate.slice(0,7)" (change)="applyMonthRangeFilters()" />
+        </div>
+      </div>
+    </div>
+  </li> -->
+    <li class="py-2 mx-1" *ngIf="filterApply?.customDateRange">
+      <button type="button" class="form-control" data-bs-toggle="dropdown"
+        *ngIf="!isMobileView && (filterType == 'tabs' || filterType == 'chartTabs')">
+        Custom Range <i class="bi bi-calendar3 mx-1"></i>
+      </button>
+      <div
+        [ngClass]=" !isMobileView && (filterType == 'tabs' || filterType == 'chartTabs') ? 'dropdown-menu dropdown-menu-end dropdown-menu-arrow px-3' : ''"
+        style="z-index: 1200;">
+        <div class="d-flex flex-gap-5">
+          <div>
+            <label class="form-label">From</label>
+            <input type="date" class="form-control" name="fromDate" [(ngModel)]="filterOptions.fromDate" min="1970-01-01"
+              [max]="currentDate" (change)="checkValidDateRange()" />
+          </div>
+          <div [ngClass]="filterOptions.fromDate ? '' : 'pe-none opacity-50'">
+            <label class="form-label">To</label>
+            <input type="date" class="form-control" name="toDate" [(ngModel)]="filterOptions.toDate"
+              [min]="filterOptions.fromDate" [max]="currentDate" (change)="applyFilters(); isInvalidToDate = false"
+              [class.is-invalid]="isInvalidToDate" />
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+
+<!-- <ul class="nav nav-tabs align-items-center" *ngIf="isFieldVisible('chartType')">
+  <li class="py-2 mx-1">
+    <label class="mx-2">Chart Type: </label>
+  </li>
+  <ng-container>
+    <li class="cursor-pointer py-2 mx-1" *ngFor="let chartType of chartTypes" (click)="changeChartType.emit(chartType)"
+      (click)="selectedChart = chartType; filterOptions.chartType = selectedChart"
+      [ngClass]="{'active': selectedChart === chartType}">
+      <div class="filter-item form-control px-3">{{ chartType | titlecase }}</div>
+    </li>
+  </ng-container>
+</ul> -->
+</div>

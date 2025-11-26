@@ -1,0 +1,110 @@
+<div class="ms-auto">
+  <ul class="list-unstyled">
+    <!-- <li>
+      <div class="dropdown pc-h-item">
+        <a
+          class="pc-head-link head-link-primary arrow-none me-0"
+          href="https://github.com/codedthemes/berry-free-angular-admin-template/"
+          target="_blank"
+        >
+          <i class="bi bi-brand-github"></i>
+        </a>
+      </div>
+    </li> -->
+    <li>
+      <div class="dropdown pc-h-item" ngbDropdown>
+        <a class="pc-head-link head-link-secondary dropdown-toggle arrow-none me-0 pointer position-relative" data-bs-toggle="dropdown"
+          data-bs-auto-close="true" aria-expanded="true">
+          <i class="bi bi-bell"></i>
+          @if(notificationCount){<span class="badge rounded-5 bg-primary number position-absolute" style="top: -8px; right: -10px;">
+            {{notificationCount < 100 ? notificationCount : '99+'}}
+            </span>}
+        </a>
+        <div class="dropdown-menu dropdown-notification dropdown-menu-end pc-h-dropdown" ngbDropdownMenu>
+          <div class="dropdown-header">
+            <a href="javascript:!" class="link-primary float-end text-decoration-underline">Mark as all read</a>
+            <h5>
+              All Notification
+              <span class="badge bg-warning rounded-pill ms-1">01</span>
+            </h5>
+          </div>
+          <ng-scrollbar style="height: calc(100vh - 315px)" visibility="hover">
+            <div class="dropdown-header px-0 text-wrap">
+              <div class="list-group list-group-flush w-100">
+                @for (item of notificationList; track $index) {<a class="list-group-item list-group-item-action">
+                  <div class="d-flex">
+                    <div class="flex-shrink-0">
+                      <img src="assets/images/user/avatar-2.jpg" alt="user-image" class="user-avtar" />
+                    </div>
+                    <div class="flex-grow-1 ms-1">
+                      <span class="float-end text-muted">{{item?.created_at | timeOrDate}}</span>
+                      <h5>{{item?.title}}</h5>
+                      <p class="text-body fs-6 mb-1">{{item?.msg}}</p>
+                      <!-- <div class="badge rounded-pill bg-light-danger">Unread</div> -->
+                      <div class="badge rounded-pill bg-light-warning">New</div>
+                    </div>
+                  </div>
+                </a>}
+              </div>
+            </div>
+          </ng-scrollbar>
+          <div class="dropdown-divider"></div>
+          <div class="text-center">
+            <a routerLink="notification" class="link-primary">View All</a>
+          </div>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div class="dropdown pc-h-item header-user-profile" ngbDropdown>
+        <a
+          class="pc-head-link head-link-primary dropdown-toggle arrow-none me-0"
+          data-bs-toggle="dropdown"
+          href="javascript:"
+          ngbDropdownToggle
+        >
+          <img [src]="userDetails?.imgUrl || 'assets/images/user.png'" alt="user-image" class="user-avtar" />
+          <span>
+            <i class="bi bi-gear"></i>
+          </span>
+        </a>
+        <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown p-0" ngbDropdownMenu>
+          <div class="card total-income-card purple overflow-hidden mb-0 rounded-bottom-0">
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <div class="avatar avatar-lg icon-purple m-r-5">
+                  <i class="bi bi-exclude f-24"></i>
+                </div>
+                <div class="ms-2">
+                  <h4 class="f-w-600 mb-0">WelCome,</h4>
+                  <p class="mb-0 opacity-50 fs-3">{{userDetails?.name}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="dropdown-header text-capitalize border-top">
+            <!-- <h4 class="text-warning">
+              WelCome,
+              <span class="fs-3 text-muted">{{userDetails?.name}}</span>
+            </h4> -->
+            <!-- <p class="text-muted">{{userDetails?.user_type }}</p> -->
+            <ng-scrollbar visibility="hover">
+              <a [routerLink]="['/profile']" class="dropdown-item">
+                <i class="bi bi-person"></i>
+                <span>Account Profile</span>
+              </a>
+              <!-- <a href="javascript:" class="dropdown-item">
+                <i class="bi bi-person"></i>
+                <span>Social Profile</span>
+              </a> -->
+              <a href="javascript:" class="dropdown-item" (click)="signout()">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout</span>
+              </a>
+            </ng-scrollbar>
+          </div>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
