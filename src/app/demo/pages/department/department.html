@@ -1,0 +1,64 @@
+<div class="row">
+    <div class="col-sm-12">
+        <app-card cardTitle="" modalId="addEmailTemplate" (callbackFun)="editModalOpen('')">
+            <app-table [columns]="columns" [rows]="businessList" [actions]="actions" [totalItems]="businessList?.length"
+                (view)="viewBin($event)" (edit)="editModalOpen($event)" (delete)="deleteBusiness($event)"
+                (updatePagination)="updatePagination($event)" />
+
+        </app-card>
+    </div>
+</div>
+
+<!--Add category model-->
+<div class="modal fade" id="addEmailTemplate" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{editingBusiness? 'Edit': 'Create'}} Department</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body scrollbar" style="max-height: 70vh; overflow-y: auto; overflow-x: hidden;">
+
+                <form [formGroup]="businessForm">
+                    <div class="mb-2">
+                        <label for="validationCustom01" class="form-label">Select Business Units<span
+                                class="text-danger">*</span></label>
+
+                        <ng-select class="form-select disabled" [items]="businessUnitsList" bindLabel="title"
+                            bindValue="id" formControlName="businessUnit_id" [searchable]="true" [virtualScroll]="true"
+                            [placeholder]="businessForm.value.businessUnit_id ? '' : 'Select Business Units'"
+                            [bufferAmount]="50" [clearable]="false"></ng-select>
+                        <div class="invalid-feedback">
+                            Please select a valid Business Units.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Department Name<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" formControlName="title"
+                            placeholder="Enter Department Name" required>
+                    </div>
+                    <!-- <div class="row mb-3">
+                <label for="location" class="form-label">Location(s)<span class="text-danger">*</span></label>
+                <app-multi-select-dropdown [list]="locationDetails" [selectedItems]="selectedLocationIds" (shareCheckedList)="onLocationChange($event)"> </app-multi-select-dropdown>
+              </div>
+              <div class="row mb-3" *ngIf="selectedLocationIds.length">
+                <label for="division" class="form-label">Division(s)</label>
+                <app-multi-select-dropdown [list]="divisionDetails" [selectedItems]="selectedDivisionIds" (shareCheckedList)="onDivisionChange($event)"> </app-multi-select-dropdown>
+              </div>
+              <div class="row mb-3" *ngIf="selectedDivisionIds.length">
+                <label for="subDivision" class="form-label">Sub Division(s)</label>
+                <app-multi-select-dropdown [list]="subDivisionDetails" [selectedItems]="selectedSubDivisionIds" (shareCheckedList)="onSubDivisionChange($event)"> </app-multi-select-dropdown>
+              </div> -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary"
+                    [disabled]="businessForm.invalid || commonService.viewPage('Masters', 'Department')?.allowEdit != true"
+                    [attr.data-bs-dismiss]="businessForm.valid? 'modal': ''"
+                    (click)="editingBusiness ? onSubmit('update') : onSubmit('create')">Save
+                    Department</button>
+            </div>
+        </div>
+    </div>
+</div>

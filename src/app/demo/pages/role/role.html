@@ -1,0 +1,48 @@
+<div class="row">
+    <div class="col-sm-12">
+        <app-card cardTitle="" modalId="addRoleModal" (callbackFun)="editModalOpen('')">
+            <app-table [columns]="tableColumns" [rows]="roleList" [totalItems]="roleList?.length" [actions]="actions"
+                (edit)="editModalOpen($event)" (delete)="onDeleteRole($event)"
+                (updatePagination)="updatePagination($event)" />
+        </app-card>
+    </div>
+</div>
+
+<div class="modal fade" id="addRoleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>{{ editingRole ? 'Edit Role':'Create Role'}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="rolesForm">
+                    <div class="row mb-3">
+                        <label for="title" class="col-md-4 col-lg-4 col-form-label">Role Name</label>
+                        <div class="col-md-8 col-lg-8">
+                            <input name="title" type="text" class="form-control" id="title" formControlName="title"
+                                placeholder="Enter Role Name" required>
+                            <div class="invalid-feedback">Enter Role Name</div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="buName" class="col-md-4 col-lg-4 col-form-label">Department</label>
+                        <div class="col-md-8 col-lg-8">
+                            <ng-select class="form-select disabled" [items]="businessList" bindLabel="title"
+                                bindValue="id" formControlName="department_id"
+                                [placeholder]="rolesForm.value?.department_id ? '' : 'Select Department'"
+                                [clearable]="false"></ng-select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary"
+                    [disabled]="rolesForm.invalid || commonService.viewPage('User Settings', 'Roles')?.allowEdit != true"
+                    [attr.data-bs-dismiss]="rolesForm.valid ? 'modal': ''"
+                    (click)="editingRole? onRoleCreation('update'): onRoleCreation('create')">Save</button>
+            </div>
+        </div>
+    </div>
+</div>

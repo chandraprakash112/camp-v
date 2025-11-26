@@ -1,0 +1,395 @@
+<div class="row">
+    <div class="col-sm-12">
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-12 d-sm-flex align-items-center justify-content-between">
+                        <div class="page-header-title">
+                            @for (breadcrumb of navigationItems; track breadcrumb; let last = $last) {
+                            @if (last) {
+                            <h5 class="m-b-10">
+                                Profile
+                            </h5>
+                            }
+                            }
+                        </div>
+                        <ul class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                @if (true) {
+                                <a [routerLink]="['/']" title="Home">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="var(--bs-secondary)"
+                                        class="icon icon-tabler icons-tabler-filled icon-tabler-home">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path
+                                            d="M12.707 2.293l9 9c.63 .63 .184 1.707 -.707 1.707h-1v6a3 3 0 0 1 -3 3h-1v-7a3 3 0 0 0 -2.824 -2.995l-.176 -.005h-2a3 3 0 0 0 -3 3v7h-1a3 3 0 0 1 -3 -3v-6h-1c-.89 0 -1.337 -1.077 -.707 -1.707l9 -9a1 1 0 0 1 1.414 0m.293 11.707a1 1 0 0 1 1 1v7h-4v-7a1 1 0 0 1 .883 -.993l.117 -.007z" />
+                                    </svg>
+                                </a>
+                                }
+                                <!-- @if (type === 'text') {
+                  <a [routerLink]="['/']">{{ 'Home' }}</a>
+                } -->
+                            </li>
+                            @for (breadcrumb of navigationItems; track breadcrumb) {
+                            @if (breadcrumb.url !== false) {
+                            <li class="breadcrumb-item">
+                                <a class="text-muted f-w-500" [routerLink]="breadcrumb.url">{{ breadcrumb.title }}</a>
+                            </li>
+                            }
+                            @if (breadcrumb.url === false && breadcrumb.type !== 'group') {
+                            <li class="breadcrumb-item">
+                                <a href="javascript:" class="f-w-500 text-dark">{{ breadcrumb.title }}</a>
+                            </li>
+                            }
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="section profile my-4">
+            <div class="row profile-row">
+                <div class="col-lg-8">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-white border-bottom-0">
+                            <ul class="nav nav-tabs card-header-tabs flex-nowrap">
+                                <li class="nav-item">
+                                    <button class="nav-link active" data-bs-toggle="tab"
+                                        data-bs-target="#profile-edit">Edit Profile</button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="nav-link" data-bs-toggle="tab"
+                                        data-bs-target="#profile-change-password">Change Password</button>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="tab-content pt-2">
+
+                                <div class="tab-pane fade show active" id="profile-edit">
+                                    <form [formGroup]="userForm" novalidate>
+
+                                        <h5 class="mb-3 card-title text-primary small mt-2 p-0">Personal Information
+                                        </h5>
+                                        <div class="row mb-2">
+                                            <label class="col-sm-4 col-form-label" for="firstName">User Name</label>
+                                            <div class="col-sm-8 mb-1 mb-lg-0">
+                                                <input type="text" id="name" class="form-control" formControlName="name"
+                                                    (keypress)="commonService.acceptOnlyAlphabetsWithSpaces($event)"
+                                                    placeholder="Enter Name">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-2">
+                                            <label class="col-sm-4 col-form-label" for="dob">Date of Birth</label>
+                                            <div class="col-sm-8">
+                                                <input type="date" id="dob" class="form-control" formControlName="dob"
+                                                    onfocus="this.max=new Date().toISOString().split('T')[0]">
+                                            </div>
+                                        </div>
+
+                                        <!-- <div class="row mb-2">
+                    <label class="col-sm-4 col-form-label" for="doj">Date of Joining</label>
+                    <div class="col-sm-8">
+                      <input type="date" id="doj" class="form-control" formControlName="doj"
+                             onfocus="this.max=new Date().toISOString().split('T')[0]">
+                    </div>
+                  </div> -->
+
+                                        <h5 class="mb-3 card-title text-primary small mt-4 p-0">Address Information</h5>
+                                        <div class="row mb-2">
+                                            <label class="col-sm-4 col-form-label" for="addressLine1">Address</label>
+                                            <div class="col-sm-4 mb-1 mb-lg-0">
+                                                <input type="text" id="addressLine1" class="form-control"
+                                                    formControlName="addressLine1" placeholder="Address Line 1">
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <input type="text" id="addressLine2" class="form-control"
+                                                    formControlName="addressLine2" placeholder="Address Line 2">
+                                            </div>
+                                        </div>
+
+                                        <!-- <div class="row mb-2">
+                    <label class="col-sm-4 col-form-label" for="addressLine2">Address Line 2</label>
+                    <div class="col-sm-8">
+                    </div>
+                  </div> -->
+
+                                        <div class="row mb-2">
+                                            <label class="col-sm-4 col-form-label" for="city">City</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" id="city" class="form-control" formControlName="city"
+                                                    (keypress)="commonService.restrictInput($event, 'city')"
+                                                    placeholder="Enter City">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-2">
+                                            <label class="col-sm-4 col-form-label" for="state">State</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" id="state" class="form-control"
+                                                    formControlName="state"
+                                                    (keypress)="commonService.restrictInput($event, 'state')"
+                                                    placeholder="Enter State">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-2">
+                                            <label class="col-sm-4 col-form-label" for="zip">Pin Code</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" id="zip" class="form-control" formControlName="zip"
+                                                    (keypress)="commonService.acceptOnlyZipCode($event)"
+                                                    placeholder="Enter 6 digit Pin Code">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-2">
+                                            <label class="col-sm-4 col-form-label" for="country">Country</label>
+                                            <div class="col-sm-8">
+                                                <input type="text" id="country" class="form-control"
+                                                    formControlName="country"
+                                                    (keypress)="commonService.restrictInput($event, 'country')"
+                                                    placeholder="Enter Country">
+                                            </div>
+                                        </div>
+
+                                        <div class="text-end mt-4">
+                                            <button type="submit" [disabled]="userForm.pristine"
+                                                class="btn btn-primary px-4" (click)="onUpdateUser()">
+                                                <i class="bi bi-save me-1"></i>Save Profile
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="tab-pane fade" id="profile-change-password">
+                                    <form [formGroup]="passwordForm" novalidate>
+                                        <div class="row mb-2">
+                                            <label for="oldPassword" class="col-sm-4 col-form-label">Current
+                                                Password</label>
+                                            <div class="col-sm-8">
+                                                <div class="input-group">
+                                                    <input [type]="isOldPasswordVisible ? 'text' : 'password'"
+                                                        class="form-control" id="oldPassword"
+                                                        formControlName="oldPassword" placeholder="Enter Old Password">
+                                                    <button class="btn" type="button"
+                                                        (click)="togglePasswordVisibility('oldPassword')">
+                                                        <i
+                                                            [ngClass]="isOldPasswordVisible ? 'bi-eye' : 'bi-eye-slash'"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <label for="newPassword" class="col-sm-4 col-form-label">New
+                                                Password</label>
+                                            <div class="col-sm-8">
+                                                <div class="input-group">
+                                                    <input [type]="isNewPasswordVisible ? 'text' : 'password'"
+                                                        class="form-control" id="newPassword" formControlName="password"
+                                                        placeholder="Enter New Password" autocomplete="off">
+                                                    <button class="btn" type="button"
+                                                        (click)="togglePasswordVisibility('newPassword')">
+                                                        <i
+                                                            [ngClass]="isNewPasswordVisible ? 'bi-eye' : 'bi-eye-slash'"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-2">
+                                            <label for="confirmPassword" class="col-sm-4 col-form-label">Confirm
+                                                Password</label>
+                                            <div class="col-sm-8">
+                                                <div class="input-group">
+                                                    <input [type]="isConfirmPasswordVisible ? 'text' : 'password'"
+                                                        class="form-control" id="confirmPassword"
+                                                        formControlName="confirmPassword"
+                                                        placeholder="Enter Confirm Password" autocomplete="off">
+                                                    <button class="btn" type="button"
+                                                        (click)="togglePasswordVisibility('confirmPassword')">
+                                                        <i
+                                                            [ngClass]="isConfirmPasswordVisible ? 'bi-eye' : 'bi-eye-slash'"></i>
+                                                    </button>
+                                                </div>
+                                                <div *ngIf="passwordForm.errors?.['passwordMismatch']"
+                                                    class="text-danger mt-1">
+                                                    Password Mismatch - Please recheck your password!
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="text-end mt-4">
+                                            <button type="submit" class="btn btn-primary"
+                                                [disabled]="passwordForm.invalid" (click)="changePassword()">
+                                                <i class="bi bi-key me-1"></i>Change Password
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4 mb-lg-0 card h-50" *ngIf="profileDetails">
+                    <div class="card-body p-4 text-center">
+                        <div class="position-relative d-inline-block mb-2">
+                            <img [src]="profileDetails?.profileUrl || 'assets/images/user.png'" class="rounded-circle"
+                                style="width: 130px; height: 130px;" alt="Profile">
+                            <span
+                                class="position-absolute bottom-0 end-0 p-1 bg-white rounded-circle shadow-sm cursor-pointer"
+                                style="height: 30px; width: 25px;" title="Change Profile Picture"
+                                (click)="updateProfilePic()">
+                                <i class="bi bi-pencil-fill text-primary"></i>
+                            </span>
+                        </div>
+
+                        <h5 class="mt-2 mb-0">{{ profileDetails?.name }}</h5>
+                        <small class="text-muted d-block text-capitalize">{{ profileDetails?.user_type }} ( {{
+                            profileDetails?.username }} )</small>
+
+                        <div class="text-start small mt-3 px-2 row">
+                            <ng-container *ngFor="let section of sections">
+                                <div class="col-lg-12 col-md-6 col-sm-12"
+                                    *ngIf="section?.sectionName == 'Personal Information'">
+                                    <div
+                                        class="title row align-items-center m-2 text-primary border-bottom border-light-subtle">
+                                        {{section?.sectionName}}</div>
+                                    <div class="m-2 text-black fw-semibold"><i
+                                            class="bi bi-envelope-fill me-2 fw-normal"></i><span
+                                            class="fw-normal">Email: </span>{{ profileDetails?.email || '-' }}</div>
+                                    <div class="m-2 text-black fw-semibold"><i
+                                            class="bi bi-telephone-fill me-2 fw-normal"></i><span
+                                            class="fw-normal">Phone: </span>{{ profileDetails?.mobileNo || '-' }}</div>
+                                    <!-- <div class="m-2 text-black fw-semibold"><i class="bi bi-person-fill me-2 fw-normal"></i>{{ personalInfo?.firstName }} {{ personalInfo?.lastName }}</div> -->
+                                    <div class="m-2 text-black fw-semibold"><i
+                                            class="bi bi-gender-ambiguous me-2 fw-normal"></i><span
+                                            class="fw-normal">Gender: </span>{{ personalInfo?.gender || '-' }}</div>
+                                    <div class="m-2 text-black fw-semibold"><i
+                                            class="bi bi-calendar3 me-2 fw-normal"></i><span class="fw-normal">DOB:
+                                        </span>{{ personalInfo?.dob | date }}</div>
+                                    <div class="m-2 text-black fw-semibold"><i
+                                            class="bi bi-calendar-event-fill me-2 fw-normal"></i><span
+                                            class="fw-normal">Joining: </span>{{ personalInfo?.doj | date }}</div>
+                                    <ng-container *ngFor="let detail of section.sectionData">
+                                        <div *ngIf="detail?.attributeValue !== null">
+                                            <ng-container
+                                                *ngIf="detail.attributeValue?.slice(0, 8) !== 'https://'; else isLink">
+                                                <i class="bi bi-info-circle-fill me-2 text-secondary"></i><span
+                                                    class="fw-normal">{{ detail.attributeKey | titlecase }}:</span> {{
+                                                detail.attributeValue || 'N/A' }}
+                                            </ng-container>
+                                            <ng-template #isLink>
+                                                <i class="bi bi-paperclip me-2 text-secondary"></i><span
+                                                    class="fw-normal">{{ detail.attributeKey | titlecase }}:</span>
+                                                <a class="text-primary text-decoration-underline"
+                                                    (click)="viewAttachment(detail.attributeValue)">View Attachment</a>
+                                            </ng-template>
+                                        </div>
+                                    </ng-container>
+                                </div>
+
+                                <div class="col-lg-12 col-md-6 col-sm-12"
+                                    *ngIf="section.sectionName == 'Account Information'">
+                                    <div
+                                        class="title row align-items-center m-2 text-primary border-bottom border-light-subtle">
+                                        {{section?.sectionName}}</div>
+
+                                    <!-- <div class="m-2 text-black fw-semibold"><i class="bi bi-envelope-fill me-2 fw-normal"></i>{{ accountInfo?.email }}</div>
+              <div class="m-2 text-black fw-semibold"><i class="bi bi-telephone-fill me-2 fw-normal"></i>{{ accountInfo?.mobileNo }}</div> -->
+                                    <div class="m-2 text-black fw-semibold"><i
+                                            class="bi bi-person-badge-fill me-2 fw-normal"></i><span
+                                            class="fw-normal">Account Status: </span><span
+                                            [ngClass]="accountInfo?.accountType ? 'text-success' : 'text-danger'">{{
+                                            accountInfo?.accountType ? 'Active' : 'In-active' }}</span></div>
+                                    <div class="m-2 text-black fw-semibold"><i
+                                            class="bi bi-person-vcard-fill me-2 fw-normal"></i><span
+                                            class="fw-normal">ID: </span> {{ accountInfo?.employeeId || '-' }}</div>
+                                    <ng-container *ngFor="let detail of section.sectionData">
+                                        <div *ngIf="detail?.attributeValue !== null">
+                                            <ng-container
+                                                *ngIf="detail.attributeValue?.slice(0, 8) !== 'https://'; else isLink">
+                                                <i class="bi bi-info-circle-fill me-2 text-secondary"></i><span
+                                                    class="fw-normal">{{ detail.attributeKey | titlecase }}:</span> {{
+                                                detail.attributeValue || 'N/A' }}
+                                            </ng-container>
+                                            <ng-template #isLink>
+                                                <i class="bi bi-paperclip me-2 text-secondary"></i><span
+                                                    class="fw-normal">{{ detail.attributeKey | titlecase }}:</span>
+                                                <a class="text-primary text-decoration-underline"
+                                                    (click)="viewAttachment(detail.attributeValue)">View Attachment</a>
+                                            </ng-template>
+                                        </div>
+                                    </ng-container>
+                                </div>
+
+                                <div class="col-lg-12 col-md-6 col-sm-12"
+                                    *ngIf="section.sectionName == 'Additional Information'">
+                                    <div
+                                        class="title row align-items-center m-2 text-primary border-bottom border-light-subtle">
+                                        {{section?.sectionName}}</div>
+
+                                    <div class="m-2 text-black fw-semibold"><i
+                                            class="bi bi-building me-2 fw-normal"></i><span
+                                            class="fw-normal">Department: </span>{{ additionalInfo?.departmentName ||
+                                        '-' }}</div>
+                                    <div class="m-2 text-black fw-semibold"><i
+                                            class="bi bi-diagram-3-fill me-2 fw-normal"></i><span
+                                            class="fw-normal">Organization: </span>{{ additionalInfo?.organizationName
+                                        || '-' }}</div>
+                                    <div class="m-2 text-black fw-semibold"><i
+                                            class="bi bi-person-square me-2 fw-normal"></i><span
+                                            class="fw-normal">Reporting to: </span>{{ additionalInfo?.reportingToName ||
+                                        '-' }}</div>
+                                    <div class="m-2 text-black fw-semibold"><i
+                                            class="bi bi-person-check-fill me-2 fw-normal"></i><span
+                                            class="fw-normal">Manager: </span>{{ additionalInfo?.managerName || '-' }}
+                                    </div>
+                                    <ng-container *ngFor="let detail of section.sectionData">
+                                        <div *ngIf="detail?.attributeValue !== null">
+                                            <ng-container
+                                                *ngIf="detail.attributeValue?.slice(0, 8) !== 'https://'; else isLink">
+                                                <i class="bi bi-info-circle-fill me-2 text-secondary"></i><span
+                                                    class="fw-normal">{{ detail.attributeKey | titlecase }}:</span> {{
+                                                detail.attributeValue || 'N/A' }}
+                                            </ng-container>
+                                            <ng-template #isLink>
+                                                <i class="bi bi-paperclip me-2 text-secondary"></i><span
+                                                    class="fw-normal">{{ detail.attributeKey | titlecase }}:</span>
+                                                <a class="text-primary text-decoration-underline"
+                                                    (click)="viewAttachment(detail.attributeValue)">View Attachment</a>
+                                            </ng-template>
+                                        </div>
+                                    </ng-container>
+                                </div>
+
+                                <ng-container *ngIf="section.sectionName !== 'Custom Fields'">
+                                    <ng-container *ngFor="let detail of section.sectionData">
+                                        <div *ngIf="detail?.attributeValue !== null">
+                                            <ng-container
+                                                *ngIf="detail.attributeValue?.slice(0, 8) !== 'https://'; else isLink">
+                                                <i class="bi bi-info-circle-fill me-2 text-secondary"></i><span
+                                                    class="fw-normal">{{ detail.attributeKey | titlecase }}:</span> {{
+                                                detail.attributeValue || 'N/A' }}
+                                            </ng-container>
+                                            <ng-template #isLink>
+                                                <i class="bi bi-paperclip me-2 text-secondary"></i><span
+                                                    class="fw-normal">{{ detail.attributeKey | titlecase }}:</span>
+                                                <a class="text-primary text-decoration-underline"
+                                                    (click)="viewAttachment(detail.attributeValue)">View Attachment</a>
+                                            </ng-template>
+                                        </div>
+                                    </ng-container>
+                                </ng-container>
+                            </ng-container>
+                        </div>
+
+
+                        <input type="file" id="profilePicInputBtn" class="d-none" #fileInput
+                            (change)="onUploadProfilePic($event, 'profile_pic'); fileInput.value = ''">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

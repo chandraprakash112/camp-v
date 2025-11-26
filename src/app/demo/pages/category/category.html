@@ -1,0 +1,100 @@
+<div class="p-3 mb-2 rounded-3 bg-body-secondary">
+    <app-filters filterType="tabs" [filterApply]="{customDateRange:true, search:true,searchTitle:'Organization'}"
+        (applyFilter)="applyFilter($event)" />
+
+    <!-- <form class="px-3">
+        <div class="d-flex align-items-center bg-white border rounded px-2 py-1" style="gap: 8px;">
+            <i class="bi bi-search text-secondary"></i>
+
+            <input type="search" class="flex-grow-1 border-0 shadow-none" placeholder="Search here..."
+                style="outline: none;" />
+        </div>
+    </form> -->
+
+
+    <div class="row g-4">
+
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3" *ngFor="let item of [10,20,63,84,0,2]">
+            <div class="card p-3 text-center m-0" style="border-radius: 12px;">
+                <img src="assets/receptionist.png" alt="icon" class="mx-auto mb-2" style="width: 60px; height: 60px;">
+
+                <h6 class="mb-3">Receptionist Status</h6>
+
+                <div class="progress" style="height: 20px; border-radius: 10px;">
+                    @if(item){<div class="progress-bar bg-success" role="progressbar" [style.width.%]="item">
+                        {{item}}%
+                    </div>}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- <div class="row">
+    <div class="col-sm-12">
+        <app-card cardTitle="" modalId="addCategory" (callbackFun)="editModalOpen('')">
+            <app-table [columns]="columns" [rows]="categoryList" [actions]="actions" [totalItems]="categoryList?.length"
+                (view)="viewSubCategory($event)" (edit)="editModalOpen($event)" (delete)="deleteCategory($event)"
+                (updatePagination)="updatePagination($event)" />
+        </app-card>
+    </div>
+</div> -->
+
+<div class="modal fade" id="addCategory" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{!editingCategory? 'Create': 'Edit'}} Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="categoryForm ">
+                    <div class="row mb-3">
+                        <label for="businessUnit" class="form-label col-lg-4 col-sm-12">Role<span
+                                class="text-danger">*</span></label>
+                        <div class="col-lg-8 col-sm-12">
+                            <ng-select class="form-select" [items]="businessDetails" bindLabel="title" bindValue="id"
+                                formControlName="role_id" [searchable]="true" [virtualScroll]="true" [bufferAmount]="50"
+                                [placeholder]="categoryForm.get('role_id').value ? '' : 'Select Role'"
+                                [clearable]="true"></ng-select>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="form-label col-lg-4 col-sm-12">Category Name<span
+                                class="text-danger">*</span></label>
+                        <div class="col-lg-8 col-sm-12">
+                            <input type="text" class="form-control" formControlName="title"
+                                placeholder="Enter Category Name" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label class="form-label col-lg-4 col-sm-12">Show On<span class="text-danger">*</span></label>
+                        <div class="col-lg-8 col-sm-12">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" value="Both" formControlName="show_on">
+                                <label class="form-check-label" for="inlineRadio1">Both</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" value="Creator" formControlName="show_on">
+                                <label class="form-check-label" for="inlineRadio2">Only Creator</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" value="Resolver" formControlName="show_on">
+                                <label class="form-check-label" for="inlineRadio3">Only Resolver</label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary"
+                    [disabled]="categoryForm.invalid || commonService.viewPage('Masters', 'Category')?.allowEdit != true"
+                    [attr.data-bs-dismiss]="categoryForm.valid ? 'modal': ''"
+                    (click)="editingCategory ? onCategoryCreation('update') : onCategoryCreation('create')">Save</button>
+            </div>
+        </div>
+    </div>
+</div>

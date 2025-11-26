@@ -1,0 +1,171 @@
+<div class="row">
+  <div class="col-sm-12">
+    <app-card cardTitle="" modalId="addUserModal" (callbackFun)="editModalOpen('')">
+      <app-table [columns]="columns" [rows]="userList" [totalItems]="totalUsers" [actions]="actions"
+        (edit)="editModalOpen($event)" (toggle)="toggleAccountStatus($event)" (delete)="onDeleteUser($event)"
+        [useApiPagination]="true" (updatePagination)="updatePagination($event)" />
+    </app-card>
+  </div>
+</div>
+
+<div class="modal fade" id="addUserModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>{{editingUser ? 'Update' : 'Create'}} User</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <form class="w-100" [formGroup]="userForm" novalidate>
+          <div class="row g-3 w-100">
+
+            <!-- Name -->
+            <div class="col-md-6">
+              <label class="form-label">Name</label>
+              <input type="text" class="form-control" formControlName="name" placeholder="Enter Name"
+                [ngClass]="{'is-invalid': isUserFormSubmitted && f['name'].errors}">
+              <!-- <div class="invalid-feedback" *ngIf="isUserFormSubmitted && f['name'].errors?.['required']">
+                    Name is required.
+                  </div> -->
+            </div>
+
+            <!-- Mobile -->
+            <div class="col-md-6">
+              <label class="form-label">Mobile Number</label>
+              <input type="text" class="form-control" formControlName="mobile_number" placeholder="Enter Mobile Number"
+                (keypress)="commonService.acceptOnlyMobileNumber($event)"
+                [ngClass]="{'is-invalid': isUserFormSubmitted && f['mobile_number'].errors}">
+              <!-- <div class="invalid-feedback" *ngIf="isUserFormSubmitted && f['mobile_number'].errors">
+                    Enter a valid 10-digit number.
+                  </div> -->
+            </div>
+
+            <!-- Email -->
+            <div class="col-md-6">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" formControlName="email" placeholder="Enter Email"
+                [ngClass]="{'is-invalid': isUserFormSubmitted && f['email'].errors}">
+              <!-- <div class="invalid-feedback" *ngIf="isUserFormSubmitted && f['email'].errors">
+                    Enter a valid email address.
+                  </div> -->
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Gender</label>
+
+              <ng-select formControlName="gender" [items]="genderList" bindValue="value" bindLabel="label"
+                [searchable]="false" [clearable]="false" class="form-control"
+                [placeholder]="userForm.value?.gender ? '' : 'Select Gender'"
+                [ngClass]="{'is-invalid': isUserFormSubmitted && f['gender'].errors}">
+              </ng-select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">User Type</label>
+              <ng-select formControlName="user_type" [items]="['agent']" [searchable]="false" [clearable]="false"
+                class="form-control" [placeholder]="userForm.value?.user_type ? '' : 'Select User Type'"
+                [ngClass]="{'is-invalid': isUserFormSubmitted && f['user_type'].errors}">
+              </ng-select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Department</label>
+              <ng-select formControlName="department_id" [items]="list.departmentList" bindValue="id" bindLabel="title"
+                [searchable]="false" [clearable]="false" class="form-control"
+                [placeholder]="userForm.value?.department_id ? '' : 'Select Department'"
+                [ngClass]="{'is-invalid': isUserFormSubmitted && f['department_id'].errors}">
+              </ng-select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Role</label>
+              <ng-select formControlName="role_id" [items]="list.roleList" bindValue="id" bindLabel="title"
+                [searchable]="false" [clearable]="false" class="form-control"
+                [placeholder]="userForm.value?.role_id? '' : 'Select Role'"
+                [ngClass]="{'is-invalid': isUserFormSubmitted && f['role_id'].errors}">
+              </ng-select>
+              <!-- <input type="text" class="form-control" formControlName="role_id" placeholder="Enter Role"> -->
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Category</label>
+              <ng-select formControlName="category_id" [items]="list.categoryList" bindValue="id" bindLabel="title"
+                [searchable]="false" [clearable]="false" class="form-control"
+                [placeholder]="userForm.value?.category_id ? '' : 'Select Category'"
+                [ngClass]="{'is-invalid': isUserFormSubmitted && f['category_id'].errors}">
+              </ng-select>
+              <!-- <input type="text" class="form-control" formControlName="category_id" placeholder="Enter Category"> -->
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Date of Birth</label>
+              <input type="date" class="form-control" formControlName="dob"
+                [ngClass]="{'is-invalid': isUserFormSubmitted && f['dob'].errors}">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Status</label>
+              <select class="form-select" formControlName="status" placeholder="Enter Status">
+                <option value="">Select Status</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Password</label>
+              <div class="input-group has-validation">
+                <input [type]="this.isPasswordVisible ? 'text': 'password'" class="form-control rounded-end-0"
+                  formControlName="password" placeholder="Enter Password"
+                  [ngClass]="{'is-invalid': isUserFormSubmitted && f['password'].errors}">
+                <span class="input-group-text" id="inputGroupPrepend"
+                  [ngClass]="this.isConfirmPasswordVisible ? 'bi-eye': 'bi-eye-slash'" (click)="togglePasswordIcon()"><i
+                    class="bi"></i></span>
+              </div>
+              <div class="invalid-feedback" *ngIf="isUserFormSubmitted && f['password'].errors?.['required']">
+                Password is required.
+              </div>
+              <div class="invalid-feedback" *ngIf="f['password'].errors?.['minlength']">
+                Password must be at least 8 characters.
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Confirm Password</label>
+              <div class="input-group has-validation">
+                <input [type]="this.isConfirmPasswordVisible ? 'text': 'password'" name="confirmPassword"
+                  class="form-control rounded-end-0" id="confirmPassword"
+                  [ngClass]="{'is-invalid': isUserFormSubmitted && f['confirmPassword'].errors}"
+                  formControlName="confirmPassword" placeholder="Enter Confirm Password">
+                <span class="input-group-text" id="inputGroupPrepend"
+                  [ngClass]="this.isConfirmPasswordVisible ? 'bi-eye': 'bi-eye-slash'"
+                  (click)="toggleConfirmPasswordIcon()"><i class="bi"></i></span>
+              </div>
+              <div class="invalid-feedback" *ngIf="isUserFormSubmitted && f['confirmPassword'].errors?.['minlength']">
+                Please enter 8
+                character password!</div>
+              <div *ngIf="f['confirmPassword'].valid && userForm?.errors?.['passwordMismatch']"
+                class="small text-danger">
+                Password Mismatch - Please recheck your password!
+              </div>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label">Address</label>
+              <textarea rows="2" class="form-control" formControlName="address" placeholder="Enter Address"></textarea>
+            </div>
+
+          </div>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="closeModel" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary"
+          [disabled]="commonService.viewPage('User Settings', 'Users')?.allowEdit != true"
+          (click)="editingUser ? onSubmit('update') : onSubmit('create')">Save
+          changes</button>
+      </div>
+    </div>
+  </div>
+</div>

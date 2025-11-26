@@ -1,0 +1,35 @@
+.table-responsive {
+  max-height: 68vh;
+  overflow: auto;
+  font-size: 12px;
+  font-family: 'Poppins';
+
+  .datatable {
+    min-width: max-content;
+    th,
+    td {
+      vertical-align: middle;
+      padding: 10px;
+      width: 150px;
+      text-align: center;
+      background: transparent;
+      .bi {
+        font-size: 14px;
+      }
+    }
+
+    thead {
+      font-size: 13px;
+      position: sticky;
+      top: 0;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #fbfbff;
+    }
+  }
+}
+
+.table-header-bg {
+  background: #f9f9f9;
+}

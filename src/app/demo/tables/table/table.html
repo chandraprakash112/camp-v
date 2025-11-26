@@ -1,0 +1,241 @@
+<div class="card mainTableComp m-0" #table>
+  <div class="card-body">
+    <div class="table-actions mb-2">
+      <div class="search-bar d-flex flex-column align-items-center justify-content-end">
+        <div class="d-flex align-items-center justify-content-end w-100">
+         <ng-content />
+        </div>
+        <form class="search-form d-flex flex-wrap align-items-center justify-content-between w-100">
+          <input class="p-2" type="search" name="query" placeholder="Search" title="Enter search keyword" [(ngModel)]="searchText" (ngModelChange)="updateTable()" />
+          <div class="d-flex align-items-center justify-content-end gap-2 pageOption-container" *ngIf="totalItems">
+            <select class="datatable-selector pagination-select" name="pageSize" [(ngModel)]="pageSize" (ngModelChange)="updatePageSize();updateTable()">
+              <option *ngFor="let pageSize of pageSizeOptions" [value]="pageSize">
+                {{ pageSize }}
+              </option>
+            </select>
+            <div class="total-items-info text-end mb-0 mx-1"> Showing {{ (currentPage - 1)*pageSize + 1 }} - {{ currentPage*pageSize > totalItems ? totalItems : currentPage*pageSize }} of {{ totalItems }} </div>
+            <div class="pagination d-flex align-items-center justify-content-end gap-1 pointer m-0">
+              <button class="datatable-selector border-0" [class.disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">&laquo;</button>
+              <button class="datatable-selector border-0" [class.disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">&raquo;</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table class="table datatable">
+        <thead>
+          <tr class="pointer">
+            <th *ngIf="showCheckBox" class="table-head" style="padding-top: 14px;">
+              <input class="pointer" type="checkbox" (change)="selectAllRows($event)" [checked]="rows.length && selectedRows.length == rows.length"/>
+            </th>
+            <th class="table-head" *ngIf="columns.length">S. No.</th>
+            <th *ngFor="let col of columns" (click)="onColumnClick(col?.key)" class="item-hover-elevate table-head">
+              <span>{{ col.label }}</span>
+              <span>
+                <i
+                  [ngClass]="
+                    selectedColumn === col?.key
+                      ? sortDirection === 'asc'
+                        ? 'bi-caret-up-fill'
+                        : 'bi-caret-down-fill'
+                      : ''
+                  "
+                ></i>
+              </span>
+            </th>
+            <th *ngIf="actions.length" class="table-head">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="filteredRows.length === 0" class="table-row">
+            <td colspan="100%" class="text-center">No result found</td>
+          </tr>
+          <tr
+            *ngFor="let row of filteredRows | pagination : currentPage : pageSize : useApiPagination | tableSort : selectedColumn : sortDirection; index as i"
+            class="table-row"
+          >
+            <td *ngIf="showCheckBox" style="padding-top: 14px;">
+              <input class="pointer" type="checkbox" [checked]="isSelected(row)" (change)="toggleSelection(row)" />
+            </td>
+            <td>{{ (i + 1) + pageSize * (currentPage - 1) }}</td>
+            <td *ngFor="let col of columns" [ngClass]="{ 'hover-cell': col.format === 'id' }">
+              <ng-container *ngIf="col?.key === 'status'">
+                <span [attr.data-status-id]="row['statusId']" [attr.data-status-name]="row['status']" [class.status-badge]="row[col?.key]">
+                  {{ row[col?.key] }}
+                </span>
+              </ng-container>
+              <ng-container *ngIf="col?.key == 'severity' || col?.key == 'priority'">
+                <span [class.severity-badge]="row[col?.key]" [class]="row['severityId'] || row['priorityId'] || row[col?.key]">{{ row[col?.key] }}</span>
+              </ng-container>
+              <ng-container *ngIf="col?.format == 'switch'">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" [title]="row[col?.key] ? 'Active' : 'In-active'" [checked]="row[col?.key]" [disabled]="row?.default || !col?.hasEditAccess" (change)="toggle.emit(row)" />
+                </div>
+              </ng-container>
+              <ng-container *ngIf="col?.key == 'email'">
+                <a [href]="'mailto:' + row[col?.key]">{{ row[col?.key] }}</a>
+              </ng-container>
+              <ng-container *ngIf="col.format === 'id' && row[col?.key]?.split(',')?.length > 0">
+                <!-- <a class="pointer">
+                  {{ row[col?.key] }}
+                  <i class="bi-eye text-primary"></i>
+                </a> -->
+                  <a class="nav-link nav-profile d-flex align-items-center pe-0 pointer" data-bs-toggle="dropdown">
+                    <span class="d-none d-md-block bi-view-stacked ps-2 text-primary"> View File</span>
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile p-2">
+                    <li *ngFor="let url of row[col?.key]?.split(',');let i= index">
+                      <div class="detail-row px-2">
+                        <p class="form-group-help-block">
+                          <a class="text-primary pointer d-flex justify-content-start align-items-center gap-2"
+                          (click)="viewAttachment(url)">
+                          <ng-container [ngSwitch]="getFileType(url)">
+                            <span *ngSwitchCase="'image'" class="bi bi-image text-primary"></span>
+                            <span *ngSwitchCase="'pdf'" class="bi bi-file-pdf-fill text-danger"></span>
+                            <span *ngSwitchCase="'xlsx'" class="bi bi-filetype-xlsx text-secondary"></span>
+                            <span *ngSwitchDefault class="bi file-earmark-fill text-secondary"></span>
+                            <span class="text-capitalize">Download {{getFileType(url)}}</span> 
+                          </ng-container>
+                            <!-- Attachment <span class="bi bi-download text-primary"></span> -->
+                          </a>
+                        </p>
+                      </div>
+                      <hr class="dropdown-divider" *ngIf="(i + 1) != row[col?.key]?.split(',')?.length">
+                    </li>
+                  </ul>
+              </ng-container>
+              <ng-container *ngIf="col?.format == 'html'">
+                <span class="remarkPara" [innerHTML]="row[col?.key]"></span>
+              </ng-container>
+              <ng-container *ngIf="col?.format == 'csv'">
+                <ul class="mb-0 ps-3">
+                  <li *ngFor="let val of row[col?.key]?.split(',')">{{val}}</li>
+                </ul>
+              </ng-container>
+              <ng-container *ngIf="col?.format == 'list'">
+                <ul class="mb-0 ps-3">
+                  <li *ngFor="let val of row[col?.key]">{{val[col?.listIdentifier]}}</li>
+                  <!-- <li *ngIf="row[col?.key].length == 0">-</li> -->
+                </ul>
+              </ng-container>
+              <ng-container *ngIf="col?.format == 'both'">
+                <span>{{row[col?.key] == 'Both' ? col?.listIdentifier : row[col?.key]}}</span>
+              </ng-container>
+
+              <ng-container *ngIf="col?.format == 'breach-status'">
+                <div class="dropdown">
+                  <div class="sla-status pointer" id="dropdownMenuClickableInside" data-bs-toggle="dropdown" data-bs-auto-close="outside" (click)="fetchSLADetails(row)">
+                    <span [ngClass]="row['ticketNo'] == selectedSLA ? 'text-primary' : ''" [ngClass]="row[col?.key] ? 'text-danger' : 'text-success'">
+                      {{ row[col?.key] == true ? 'Breached' : 'Not Breached' }}
+                    </span>
+                    <i class="bi bi-info-circle mx-1"></i>
+                  </div>
+                  <ul class="dropdown-menu sla-tooltip-card top">
+                    <div>
+                      <div class="tooltip-header">
+                        <i class="bi bi-info-circle me-2 text-primary"></i>
+                        SLA Rule Details
+                      </div>
+                      <div class="tooltip-row"><span class="label">Rule Name:</span> {{ slaDetails?.slaRuleName || '-' }}</div>
+                      <div class="tooltip-row"><span class="label">SLA On:</span> {{ slaDetails?.slaOn || '-' }}</div>
+                      <div class="tooltip-row"><span class="label">Calculated On:</span> {{ slaDetails?.slaCalculatedOn || '-' }}</div>
+                      <div class="tooltip-row"><span class="label">Start:</span> {{ slaDetails?.slaCalculationStart ? (slaDetails?.slaCalculationStart | date:'dd-MMM-YYYY HH:mm a') : '-' }}</div>
+                      <div class="tooltip-row"><span class="label">End:</span> {{ slaDetails?.slaCalculationEnd ? (slaDetails?.slaCalculationEnd | date:'dd-MMM-YYYY HH:mm a') : '-' }}</div>
+                      <div class="tooltip-row">
+                        <span class="label">Target Response Time:</span> 
+                        <ng-container *ngIf="slaDetails?.responseTimeMints != null; else noResponseTime">
+                          {{ slaDetails.responseTimeMints | timeConverter : 'minutes' }} 
+                        </ng-container>
+                        <ng-template #noResponseTime>-</ng-template>
+                      </div> 
+                      <div class="tooltip-row">
+                        <span class="label">Target SLA Time:</span> 
+                        <ng-container *ngIf="slaDetails?.slaTime != null; else noSlaTime">
+                          {{ slaDetails.slaTime | timeConverter : 'minutes'  }}
+                        </ng-container>
+                        <ng-template #noSlaTime>-</ng-template>
+                      </div>                   
+                      <div class="tooltip-row"><span class="label">Response Time:</span> {{ slaDetails?.responseTime }}</div>                                               
+                      <div class="tooltip-row"><span class="label">Total Spent Time:</span> {{ slaDetails?.totalWorkingTime }}</div>                                               
+                    </div>
+                  </ul>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="col?.key == 'customFields'">
+                <div class="dropdown">
+                  <div class="sla-status pointer" id="dropdownMenuClickableInside" data-bs-toggle="dropdown" data-bs-auto-close="outside" (click)="fetchIncidentCustomFields( (col.format == 'incident' ? row['ticketNo'] : row['requestId']), col.format)">
+                    <span>
+                      <i class="bi bi-info-circle mx-1"></i>
+                    </span>
+                  </div>
+                  <ul class="dropdown-menu sla-tooltip-card top">
+                    <div>
+                      <div class="tooltip-header">
+                        <i class="bi bi-info-circle me-2 text-primary"></i>
+                        Custom Fields
+                      </div>
+                      <ng-container *ngIf="incidentCustomFields?.length">
+                        <div class="tooltip-row" *ngFor="let field of incidentCustomFields">
+                          <span class="label">{{field?.attributeKey}}</span> 
+                          <ng-container *ngIf="field.attributeValue?.slice(0, 8) != 'https://'; else isLink">
+                            {{ field.attributeValue || '-' }}
+                          </ng-container>
+                          <ng-template #isLink>
+                            <a class="detail-value pointer" (click)="viewAttachment(field.attributeValue)">
+                              View Attachment
+                            </a>
+                          </ng-template>                                            
+                        </div>  
+                      </ng-container>
+                      <div class="tooltip-row" *ngIf="!incidentCustomFields?.length"><span class="label">No Custom Field Found!</span></div>                                              
+                    </div>
+                  </ul>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="col.format == 'view-icon'">
+                <i (click)="actionCallback('View', row)" class="bi-eye text-primary pointer"></i>
+              </ng-container>
+
+              <ng-container *ngIf="col?.pipe">
+                <span>{{col?.pipe(row[col?.key])}}</span>
+              </ng-container>
+
+              <ng-container *ngIf="col?.key == 'business_units'">
+                <ul class="mb-0 ps-3">
+                  <li *ngFor="let val of row[col?.key]">{{val[col?.listIdentifier]}}</li>
+                </ul>
+              </ng-container>
+
+              <!-- <ng-container *ngIf="col?.format == 'image'">
+                <img height="20px" width="20px" class="rounded pointer" [src]="row[col?.key] || 'assets/images/user.png'" (click)="viewImage(row[col?.key])" />
+              </ng-container> -->
+              <ng-container *ngIf="col?.key !== 'business_units' && !col?.pipe && col.format !== 'id' && col?.format !== 'html' && col?.format !== 'image' && col?.format !== 'switch' && col?.key !== 'status' && col?.key !== 'email' && col?.format !== 'csv' && col?.format !== 'list' && col?.format !== 'breach-status' && col?.format != 'view-icon' && col?.key !== 'customFields' && col?.key != 'severity' && col?.key != 'priority' && col?.format != 'both'">
+                {{ col.format === "date" || col.format === "time" || col.format === "timeOrDate" ? (row[col?.key] | timeOrDate : col?.format) : (col.format === "hours" || col.format === "minutes") ? (row[col?.key] | timeConverter : col.format) : row[col?.key] }}
+              </ng-container>
+            </td>
+            <td *ngIf="actions.length" [ngClass]="selectedRows.length ? 'opacity-50 pe-none': ''">
+              <div class="d-flex" *ngIf="row?.roleId !== 'SUPER_ADMIN' && row?.personType !== 'Super Admin'">
+                <!-- <div class="sub-menucontainer" *ngIf="!isMobile && actions.length > 2">
+                  <div class="icon">
+                    <i class="bi-three-dots-vertical"></i>
+                  </div>
+                  <div class="submenu">
+                    <button *ngFor="let action of actions" (click)="actionCallback(action.type, row)" [class.d-none]="row?.default && action.type != 'View'">
+                      <i [ngClass]="action.icon" class="text-primary"></i> {{ action.label }}
+                    </button>
+                  </div>
+                </div> -->
+                <div class="controls d-flex gap-4">
+                  <span *ngFor="let action of actions" (click)="actionCallback(action.type, row)" [class.d-none]="(row?.default || row?.defaultField)&& action.type != 'View'">
+                    <i [ngClass]="action.icon" title="{{ action.label }}" class="text-primary pointer" [style.color]="action.type == 'Delete' ? 'red !important' : ''"></i>
+                  </span>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>      
+    </div>
+  </div>
+</div>
