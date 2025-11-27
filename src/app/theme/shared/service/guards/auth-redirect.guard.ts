@@ -16,9 +16,9 @@ export class AuthRedirectGuard implements CanActivate {
       let status = false;
       this.authService.ConfigStatus.subscribe(data => status = data)
       if(status) {
-        this.router.navigate(['/admin/admin-dashboard']);
+        this.router.navigate(['/dashboard']);
       } else {
-        this.router.navigate(['/admin/setting']);
+        this.router.navigate(['/setting']);
       }
       return false; 
     }
