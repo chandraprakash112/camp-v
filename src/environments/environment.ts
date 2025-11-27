@@ -8,7 +8,7 @@ export const environment = {
   appVersion: packageInfo.version,
   production: false,
   baseUrl: 'https://qa.samparkme.com/Comp-vision-solution',
-  baseWebSocket: 'ws://94.136.188.209/notification/ws',
+  // baseWebSocket: 'ws://94.136.188.209/notification/ws',
   pusher: {
     key: '55af717be18d7bb5fdb1',
     secret: '4bffda7fa1c1035ad4e6',

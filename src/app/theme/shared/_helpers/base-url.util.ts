@@ -13,13 +13,13 @@ export function getBaseUrl(): string {
 }
 
 export function getBaseWebSocketUrl(): string {
-  let baseWs = environment.baseWebSocket;
-  const isLocalhost = window.location.hostname.includes('localhost');
+  // let baseWs = environment.baseWebSocket;
+  // const isLocalhost = window.location.hostname.includes('localhost');
 
-  if (environment.production && !isLocalhost && baseWs.startsWith('/')) {
-    const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    baseWs = `${wsProtocol}://${window.location.host}${baseWs}`;
-  }
+  // if (environment.production && !isLocalhost && baseWs.startsWith('/')) {
+  //   const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+  //   baseWs = `${wsProtocol}://${window.location.host}${baseWs}`;
+  // }
 
-  return baseWs;
+  return "baseWs";
 }
