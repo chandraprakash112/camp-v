@@ -2,11 +2,14 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AdminComponent } from './theme/layout/admin/admin.component';
 import { GuestComponent } from './theme/layout/guest/guest.component';
+import { AuthGuardService } from './theme/shared/service/guards/auth-guard.service';
+import { AuthRedirectGuard } from './theme/shared/service/guards/auth-redirect.guard';
 
 const routes: Routes = [
   {
     path: '',
     component: AdminComponent,
+    canActivate: [AuthGuardService], // Prevents access to admin routes if not logged in
     children: [
       {
         path: '',
@@ -76,6 +79,7 @@ const routes: Routes = [
   {
     path: '',
     component: GuestComponent,
+    canActivate: [AuthRedirectGuard],
     children: [
       {
         path: 'login',
@@ -86,7 +90,8 @@ const routes: Routes = [
         loadComponent: () => import('./demo/pages/authentication/register/register.component').then((c) => c.RegisterComponent)
       }
     ]
-  }
+  },
+  { path: '**', redirectTo: 'login' },
 ];
 
 @NgModule({
